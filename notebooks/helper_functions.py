@@ -4,6 +4,10 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score,\
 f1_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
 from sklearn.metrics import roc_auc_score, roc_curve
 
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+
 def make_results(model_name:str, model_object, metric:str):
     '''
     Arguments:
@@ -108,3 +112,37 @@ def get_scores(model_name:str, model, X_test_data, y_test_data):
                          })
   
     return table
+
+
+def kmeans_inertia(num_clusters, x_vals):
+    """
+    Accepts as arguments list of ints and data array. 
+    Fits a KMeans model where k = each value in the list of ints. 
+    Returns each k-value's inertia appended to a list.
+    """
+    inertia = []
+    for num in num_clusters:
+        kms = KMeans(n_clusters=num, random_state=42)
+        kms.fit(x_vals)
+        inertia.append(kms.inertia_)
+
+    return inertia
+
+
+def kmeans_sil(num_clusters, x_vals):
+    """
+    Accepts as arguments list of ints and data array. 
+    Fits a KMeans model where k = each value in the list of ints.
+    Calculates a silhouette score for each k value. 
+    Returns each k-value's silhouette score appended to a list.
+    """
+    sil_score = []
+    for num in num_clusters:
+        kms = KMeans(n_clusters=num, random_state=42)
+        kms.fit(x_vals)
+        sil_score.append(silhouette_score(x_vals, kms.labels_))
+
+    return sil_score
+
+
+
